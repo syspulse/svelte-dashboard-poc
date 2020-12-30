@@ -1,8 +1,10 @@
 <script>
 	import { onMount } from "svelte";
-	// import Process from './Process.svelte';
+	import Process from './Process.svelte';
+	import Icon, {iconNames} from "./Icon.svelte"
 	import Dashboard from "./Dashboard.svelte";
 
+	console.log("icon",iconNames[getRand(iconNames.length)+1])
 	let time = new Date();
 	let tick = 1;
 
@@ -45,13 +47,14 @@
 	// 		],
 	// 	},
 	// ];
-	let initialBlocks = Array(1).fill().map(
+	let initialBlocks = Array(10).fill().map(
 		(_,i) => (
 		{
-			x: getRand(10),//getRand(850),
-			y: getRand(10),//getRand(450),
+			x: getRand(300),//getRand(850),
+			y: getRand(200),//getRand(450),
 			h: 128,
-			name: "Source-"+getRand(tick + 100),
+			name: "Source-"+i,
+			icon: iconNames[getRand(iconNames.length)+1],
 			telemetry: [
 				{ name: "tx-in", value: 0 },
 				{ name: "tx-out", value: 0 },
@@ -67,6 +70,7 @@
 			y: block.y,
 			h: block.h,
 			name: block.name,
+			icon: block.icon,
 			telemetry: [
 				{ name: block.telemetry[0].name, value: getRand(tick + 100) },
 				{ name: block.telemetry[1].name, value: getRand(0) },
@@ -88,5 +92,6 @@
 </script>
 
 <h1>Telemetry: {blocks.length}</h1>
-
+<Icon name="arrow"/>
+<Icon name="coffee"/>
 <Dashboard {blocks} />

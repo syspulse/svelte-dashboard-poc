@@ -14,7 +14,6 @@
 	}
 </style>
 
-<!-- <h1>What now?</h1> -->
 <svg width="{width}" height="{height}">
 	<g transform="translate(0,0)">
 		<rect x="0" y="0" width="{width}" height="{height}" class="dashboard">
@@ -25,6 +24,7 @@
 	{#each blocks as block, i}
 		<Process
 			name={block.name}
+			icon={block.icon}
 			xpos={block.x}
 			ypos={block.y}
 			h={block.h}

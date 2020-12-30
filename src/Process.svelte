@@ -1,10 +1,13 @@
 <script>
+	import Icon, { directions, iconNames } from "./Icon.svelte"
+	
 	export let name = "";
 	export let xpos = 0;
 	export let ypos = 0;
-	export let w = 178;
+	export let w = 188;
 	export let h = 128;
 	export let telemetry = [];
+	export let icon = "arrow";
 	
 	let blinker = 0
 	
@@ -12,7 +15,7 @@
 		// just reference telemetry to trigger the change of blinked
 		telemetry
 		blinker = blinker + 1
-		console.log("Blink:", name, blinker, xpos,ypos, w, h);
+		//console.log("Blink:", name, blinker, xpos,ypos, w, h);
 	}
 
 	console.log("INIT",name,blinker, xpos,ypos, w, h);
@@ -44,6 +47,7 @@
   		to {fill: rgb(64, 196, 99);}
 	}
 
+	.debug,
 	.text,
 	.name,
 	.telemetry-name,
@@ -58,6 +62,10 @@
 		white-space: nowrap;
 	}
 
+	.debug {
+		font-size: 9px;
+	}
+
 	.telemetry-name {
 		fill: rgb(106, 101, 116);
 	}
@@ -70,6 +78,10 @@
 		stroke-width: 1;
 		stroke: rgb(88, 96, 105);
 	}
+
+	.icon {
+    	font-size: 2em;
+  	}
 </style>
 
 <svg>
@@ -80,7 +92,8 @@
 	</g>
 	<g transform="translate({xpos},{ypos})">
 		<g transform="translate({xpos},{ypos + 20})">
-			<text x="20" y="-5" class="name">{name} ({xpos}:{ypos},{w}x{h})</text>
+			<text x="20" y="-5" class="name">{name} <tspan class="debug">({xpos}:{ypos},{w}x{h})</tspan></text>
+			<Icon name={icon} xpos={w-15} ypos=-15></Icon>
 			{#each telemetry as t, i}
 				<rect
 					x="12"
