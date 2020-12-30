@@ -1,6 +1,9 @@
 <script>
 	import Icon, { directions, iconNames } from "./Icon.svelte";
-	import Moveable from "svelte-moveable";
+	// import Moveable from "svelte-moveable";
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let name = "";
 	export let xpos = 0;
@@ -24,6 +27,24 @@
 		telemetry;
 		blinker = blinker + 1;
 		//console.log("Blink:", name, blinker, xpos,ypos, w, h);
+	}
+
+	function removeBlock(block) {
+		dispatch('removeBlock', {
+			name: block
+		});
+	}
+
+	function addBlock(block) {
+		dispatch('addBlock', {
+			block: block
+		});
+	}
+
+	function updateBlock(block) {
+		dispatch('updateBlock', {
+			block: block
+		});
 	}
 
 	console.log("INIT", name, blinker, xpos, ypos, w, h);
@@ -103,9 +124,13 @@
 	.icon {
 		font-size: 2em;
 	}
+
+	.draggable {
+  		cursor: move;
+	}
 </style>
 
-<Moveable
+<!-- <Moveable
 	draggable={true}
 	{target}
 	throttleDrag={0}
@@ -133,9 +158,51 @@
 		xpos = xpos + (clientX - movePos.x)
 		ypos = ypos + (clientY - movePos.y)
 		
-	}} />
+	}} /> -->
 
-<svg class="target" bind:this={target} x={xpos} y={ypos}>
+<svg class="target" bind:this={target} x={xpos} y={ypos}
+	on:mousemove="{e => {
+		if(moving) {
+			xpos = xpos + (e.clientX - movePos.x)
+			ypos = ypos + (e.clientY - movePos.y)
+			movePos.x = e.clientX
+			movePos.y = e.clientY
+
+			updateBlock({
+				x: xpos,
+				y: ypos,
+				w: w,
+				h: h,
+				name: name,
+				icon: icon,
+				telemetry: telemetry
+			})
+		}
+		
+	}}"
+	on:mousedown="{e => {
+		
+		movePos.x = e.clientX
+		movePos.y = e.clientY
+		moving = true
+
+		updateBlock({
+				x: xpos,
+				y: ypos,
+				w: w,
+				h: h,
+				name: name,
+				icon: icon,
+				telemetry: telemetry
+			})
+	}}"
+	
+	on:mouseup="{ e=> {
+		moving = false;
+		
+	}}"
+
+>
 	<g transform="translate(16,0)">
 		<rect x="0" y="0" width={w} height={h} class={(moving ? "border-moving": "border")+" processor"}>
 			<title>{name}</title>

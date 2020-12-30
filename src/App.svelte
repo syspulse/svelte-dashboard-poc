@@ -47,7 +47,8 @@
 	// 		],
 	// 	},
 	// ];
-	let initialBlocks = Array(1).fill().map(
+
+	let initialBlocks = Array(2).fill().map(
 		(_,i) => (
 		{
 			x: getRand(300),//getRand(850),
@@ -81,19 +82,67 @@
 		})
 	);
 
-	// onMount(() => {
-	// 	const interval = setInterval(() => {
-	// 		//time = new Date();
-	// 		tick = tick + 1;
-	// 	}, 1000);
+	function handleRemoveBlock(event) {
+		console.log("RemoveBlock:", event.detail,event.detail.name);
+		blocks = blocks.filter((b) => b.name !== event.detail.name);
+	}
 
-	// 	return () => {
-	// 		clearInterval(interval);
-	// 	};
-	// });
+	function handleAddBlock(event) {
+		console.log("AddBlock:", event.detail, event.detail.block);
+		let block = event.detail.block
+		blocks = blocks.concat({
+			x: block.x,
+			y: block.y,
+			h: block.h,
+			name: block.name,
+			icon: block.icon,
+			telemetry: block.telemetry,
+
+		});
+	}
+
+	function handleUpdateBlock(event) {
+		console.log("UpdateBlock:", event.detail, event.detail.block);
+	
+		let block1 = event.detail.block
+		let i = blocks.findIndex( (b) => b.name === block1.name)
+		let block0 = blocks[i]
+		
+		blocks[i] = block1
+		console.log("UpdateBlock:", i, blocks);
+
+		// const block = event.detail.block
+		// let blocks1 = blocks.filter((b) => b.name !== block.name);
+		// blocks1 = blocks1.concat({
+		// 	x: block.x,
+		// 	y: block.y,
+		// 	h: block.h,
+		// 	name: block.name,
+		// 	icon: block.icon,
+		// 	telemetry: block.telemetry,
+
+		// });
+		// blocks = blocks1;
+	}
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			//time = new Date();
+			tick = tick + 1;
+		}, 1000);
+
+		return () => {
+			clearInterval(interval);
+		};
+	});
 </script>
 
 <h1>Telemetry: {blocks.length}</h1>
 <Icon name="arrow"/>
 <Icon name="coffee"/>
-<Dashboard {blocks} />
+<Dashboard 
+	{blocks} 
+	on:addBlockApp={handleAddBlock}
+	on:removeBlockApp={handleRemoveBlock}
+	on:updateBlockApp={handleUpdateBlock}
+/>
