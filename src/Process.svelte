@@ -1,6 +1,7 @@
 <script>
-	import Icon, { directions, iconNames } from "./Icon.svelte"
-	
+	import Icon, { directions, iconNames } from "./Icon.svelte";
+	import Moveable from "svelte-moveable";
+
 	export let name = "";
 	export let xpos = 0;
 	export let ypos = 0;
@@ -8,17 +9,24 @@
 	export let h = 128;
 	export let telemetry = [];
 	export let icon = "arrow";
-	
-	let blinker = 0
-	
+
+	let moving = false;
+	let movePos = { x: 0, y: 0 };
+	let frame = {
+		translate: [0, 0],
+	};
+	let target;
+
+	let blinker = 0;
+
 	$: {
 		// just reference telemetry to trigger the change of blinked
-		telemetry
-		blinker = blinker + 1
+		telemetry;
+		blinker = blinker + 1;
 		//console.log("Blink:", name, blinker, xpos,ypos, w, h);
 	}
 
-	console.log("INIT",name,blinker, xpos,ypos, w, h);
+	console.log("INIT", name, blinker, xpos, ypos, w, h);
 </script>
 
 <style>
@@ -39,12 +47,20 @@
 	}
 
 	@keyframes data-1-keyframes-1 {
-  		from {fill:rgb(235, 237, 240);}
-  		to {fill: rgb(64, 196, 99);}
+		from {
+			fill: rgb(235, 237, 240);
+		}
+		to {
+			fill: rgb(64, 196, 99);
+		}
 	}
 	@keyframes data-1-keyframes-2 {
-  		from {fill:rgb(235, 237, 240);}
-  		to {fill: rgb(64, 196, 99);}
+		from {
+			fill: rgb(235, 237, 240);
+		}
+		to {
+			fill: rgb(64, 196, 99);
+		}
 	}
 
 	.debug,
@@ -79,30 +95,66 @@
 		stroke: rgb(88, 96, 105);
 	}
 
+	.border-moving {
+		stroke-width: 2;
+		stroke: lightblue;
+	}
+
 	.icon {
-    	font-size: 2em;
-  	}
+		font-size: 2em;
+	}
 </style>
 
-<svg>
-	<g transform="translate({xpos + 16},{ypos})">
-		<rect x={xpos} y={ypos} width={w} height={h} class="border processor">
+<Moveable
+	draggable={true}
+	{target}
+	throttleDrag={0}
+	on:dragStart={({ detail: { set , clientX, clientY} }) => {
+		set(frame.translate);
+		
+		moving = true
+		movePos.x = clientX
+		movePos.y = clientY
+		
+		console.log('onDragStart', frame.translate);
+	}}
+	on:drag={({ detail: { target, beforeTranslate, clientX, clientY } }) => {
+		console.log('onDrag', clientX, clientY);
+		frame.translate = beforeTranslate;
+		target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px)`;
+		xpos = xpos + (clientX - movePos.x)
+		ypos = ypos + (clientY - movePos.y)
+		movePos.x = clientX
+		movePos.y = clientY
+	}}
+	on:dragEnd={({ detail: { target, isDrag, clientX, clientY } }) => {
+		console.log('onDragEnd', clientX, clientY, movePos, target, isDrag);
+		moving = false
+		xpos = xpos + (clientX - movePos.x)
+		ypos = ypos + (clientY - movePos.y)
+		
+	}} />
+
+<svg class="target" bind:this={target} x={xpos} y={ypos}>
+	<g transform="translate(16,0)">
+		<rect x="0" y="0" width={w} height={h} class={(moving ? "border-moving": "border")+" processor"}>
 			<title>{name}</title>
 		</rect>
-	</g>
-	<g transform="translate({xpos},{ypos})">
-		<g transform="translate({xpos},{ypos + 20})">
-			<text x="20" y="-5" class="name">{name} <tspan class="debug">({xpos}:{ypos},{w}x{h})</tspan></text>
-			<Icon name={icon} xpos={w-15} ypos=-15></Icon>
+
+		<g transform="translate(-16,20)">
+			<text x="20" y="-5" class="name">
+				{name}
+				<tspan class="debug">({xpos}:{ypos},{w}x{h})</tspan>
+			</text>
+			<Icon name={icon} xpos={w - 15} ypos="-15" />
 			{#each telemetry as t, i}
 				<rect
 					x="12"
 					y={10 + i * 15}
 					width="11"
 					height="11"
-					class="border data-{t.value === 0 ? "0" : "1-"+blinker%2}">
+					class="border data-{t.value === 0 ? '0' : '1-' + (blinker % 2)}">
 					<title>{t.value}</title>
-					<!-- <animate attributeName="fill" values="0;5;0" dur="1s" repeatCount="indefinite" /> -->
 				</rect>
 				<text x="26" y={10 + i * 15 + 10} class="telemetry-name">
 					{t.name}:

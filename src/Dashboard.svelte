@@ -1,5 +1,12 @@
 <script>
 	import Process from "./Process.svelte";
+	import Moveable from "svelte-moveable";
+
+    const frame = {
+        translate: [0, 0],
+    };
+	let target;
+	
 	export let blocks = [];
 	// 	console.log(blocks);
 	export let width = 2000;
@@ -14,7 +21,10 @@
 	}
 </style>
 
-<svg width="{width}" height="{height}">
+<!-- on:mousemove="{e => {	console.log(e);}}" -->
+<svg width="{width}" height="{height}"
+	
+>
 	<g transform="translate(0,0)">
 		<rect x="0" y="0" width="{width}" height="{height}" class="dashboard">
 			<title>dashboard</title>

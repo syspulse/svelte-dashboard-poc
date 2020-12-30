@@ -47,7 +47,7 @@
 	// 		],
 	// 	},
 	// ];
-	let initialBlocks = Array(10).fill().map(
+	let initialBlocks = Array(1).fill().map(
 		(_,i) => (
 		{
 			x: getRand(300),//getRand(850),
@@ -63,7 +63,9 @@
 		})
 	);
 
-	$: blocks = initialBlocks.map(
+	let blocks = initialBlocks
+
+	$: blocks = blocks.map(
 		(block,i) => (
 			{
 			x: block.x,
@@ -79,16 +81,16 @@
 		})
 	);
 
-	onMount(() => {
-		const interval = setInterval(() => {
-			//time = new Date();
-			tick = tick + 1;
-		}, 1000);
+	// onMount(() => {
+	// 	const interval = setInterval(() => {
+	// 		//time = new Date();
+	// 		tick = tick + 1;
+	// 	}, 1000);
 
-		return () => {
-			clearInterval(interval);
-		};
-	});
+	// 	return () => {
+	// 		clearInterval(interval);
+	// 	};
+	// });
 </script>
 
 <h1>Telemetry: {blocks.length}</h1>
