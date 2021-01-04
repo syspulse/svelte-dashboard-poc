@@ -14,45 +14,11 @@
 
 	// $: console.log(tick)
 
-	// blocks = [
-	// 	{
-	// 		x: 0,
-	// 		y: 5,
-	// 		name: "Source",
-	// 		telemetry: [
-	// 			{ name: "tx-in", value: getRand(tick + 100) },
-	// 			{ name: "tx-out", value: getRand(0) },
-	// 			{ name: "total", value: getRand(tick + 10) },
-	// 		],
-	// 	},
-	// 	{
-	// 		x: 75,
-	// 		y: 18,
-	// 		h: 80,
-	// 		name: "Processor",
-	// 		telemetry: [
-	// 			{ name: "db-w", value: getRand(tick + 1000) },
-	// 			{ name: "db-r", value: getRand(tick + 1000) },
-	// 		],
-	// 	},
-	// 	{
-	// 		x: 150,
-	// 		y: 5,
-	// 		name: "Sink",
-	// 		telemetry: [
-	// 			{ name: "input-1", value: getRand(10) },
-	// 			{ name: "input-2", value: getRand(20) },
-	// 			{ name: "input-3", value: 0 },
-	// 			{ name: "input-4", value: 0 },
-	// 		],
-	// 	},
-	// ];
-
-	let initialBlocks = Array(2).fill().map(
+	let initialBlocks = Array(10).fill().map(
 		(_,i) => (
 		{
-			x: getRand(300),//getRand(850),
-			y: getRand(200),//getRand(450),
+			x: getRand(850),
+			y: getRand(450),
 			h: 128,
 			name: "Source-"+i,
 			icon: iconNames[getRand(iconNames.length)+1],
@@ -138,8 +104,8 @@
 </script>
 
 <h1>Telemetry: {blocks.length}</h1>
-<Icon name="arrow"/>
-<Icon name="coffee"/>
+<!-- <Icon name="arrow"/> -->
+<!-- <Icon name="coffee"/> -->
 <Dashboard 
 	{blocks} 
 	on:addBlockApp={handleAddBlock}
